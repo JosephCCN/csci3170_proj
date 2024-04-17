@@ -1,6 +1,7 @@
 import java.sql.*;
 
-class main{
+
+public class main{
     public static void main(String args[]) {
         System.out.println("Hello");
 
@@ -15,10 +16,12 @@ class main{
             Connection con = DriverManager.getConnection(host, username, password);
             System.out.println("Connected");
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from SPONSORS");
+            lobby cli = new lobby(con);
+            cli.startmeun();
+            /*ResultSet rs = stmt.executeQuery("select * from SPONSORS");
             while(rs.next()) {
                 System.out.println(rs.getInt("SID") + " " + rs.getString("SPONSOR_NAME") + " " + rs.getFloat("MARKET_VALUE"));
-            }
+            }*/
             con.close();
         }
         catch(Exception e) {
