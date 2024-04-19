@@ -37,8 +37,7 @@ public class SystemInterface{
         String Book_author = """
         CREATE TABLE Book_author (
             author_name varchar(50),
-            ISBN char(13),
-            FOREIGN KEY(ISBN) REFERENCES book(ISBN) on delete CASCADE
+            ISBN char(13)
         )
         """;
         String customer = """
@@ -65,9 +64,7 @@ public class SystemInterface{
         CREATE TABLE ordering (
             order_id char(8),
             ISBN char(13),
-            quantity Integer,
-            FOREIGN KEY(order_id) REFERENCES orders(order_id) on delete CASCADE,
-            FOREIGN KEY(ISBN) REFERENCES book(ISBN) on delete CASCADE
+            quantity Integer
         )
         """;
         try {
@@ -86,7 +83,7 @@ public class SystemInterface{
     private void deleteTable() {
         String[] tables = {"ordering", "Book_author", "customer", "orders", "book"};
         try{
-            for(int i=0;i<7;i++) {
+            for(int i=0;i<tables.length;i++) {
                 String query = String.join(" ", "drop table", tables[i]);
                 stmt.executeQuery(query);
             }
@@ -139,18 +136,87 @@ public class SystemInterface{
         }
     }
 
+    private void insertCustomer(File file) {
+        try{
+            Scanner scanner = new Scanner(file);
+            while(scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parm = line.split("\\|", 0);
+                
+                String cid = parm[0];
+                String name = parm[1];
+                String addr = parm[2];
+                String card_no = parm[3];
+
+                String query = String.format("insert into customer values ('%s', '%s', '%s', '%s')", cid, name, addr, card_no);
+                this.stmt.executeQuery(query);
+            }
+            scanner.close();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertOrders(File file) {
+        try{
+            Scanner scanner = new Scanner(file);
+            while(scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parm = line.split("\\|", 0);
+                
+                String oid = parm[0];
+                String date = parm[1];
+                String status = parm[2];
+                String charge = parm[3];
+                String cid = parm[4];
+
+                String query = String.format("insert into orders values ('%s', to_date('%s', 'YYYY-MM-DD'), '%s', %s, '%s')", oid, date, status, charge, cid);
+                this.stmt.executeQuery(query);
+            }
+            scanner.close();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertOrdering(File file) {
+        try{
+            Scanner scanner = new Scanner(file);
+            while(scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parm = line.split("\\|", 0);
+                
+                String oid = parm[0];
+                String isbn = parm[1];
+                String quantity = parm[2];
+
+                String query = String.format("insert into ordering values ('%s', '%s', %s)", oid, isbn, quantity);
+                this.stmt.executeQuery(query);
+            }
+            scanner.close();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void insertData() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter the folder path");
         String path = scanner.nextLine();
+        System.out.print("Processing...");
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
         for(int i=0;i<listOfFiles.length;i++) {
-            if(listOfFiles[i].getName().equals("book.txt")) {
-                insertBook(new File(path, "book.txt"));
-            }
+            if(listOfFiles[i].getName().equals("book.txt")) insertBook(new File(path, "book.txt"));
             else if(listOfFiles[i].getName().equals("book_author.txt")) insertAuthor(new File(path, "book_author.txt"));
+            else if(listOfFiles[i].getName().equals("customer.txt")) insertCustomer(new File(path, "customer.txt"));
+            else if(listOfFiles[i].getName().equals("orders.txt")) insertOrders(new File(path, "orders.txt"));
+            else if(listOfFiles[i].getName().equals("ordering.txt")) insertOrdering(new File(path, "ordering.txt"));
         }
+        System.out.println("Data is loaded!");
     }
 
     private void setSysDate() {
