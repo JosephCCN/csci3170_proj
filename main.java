@@ -44,7 +44,7 @@ class Lobby {
                 continue;
             }
             else if(choice == 5){
-                System.out.println("quit the system now. see you later");
+                System.out.println("Quit the system now. See you later");
                 break;
             }
             else{
@@ -63,8 +63,8 @@ class main{
 
 
         String host = "jdbc:oracle:thin:@//db18.cse.cuhk.edu.hk:1521/oradb.cse.cuhk.edu.hk";
-        String username = "h072";
-        String password = "danfiavI";
+        String username = "h017";
+        String password = "cicsEvva";
         
 
         try{

@@ -82,7 +82,33 @@ public class BookStore {
         Scanner scan = new Scanner(System.in);
         System.out.print("Please input the Month for Order Query (e.g.2003-06): ");
         String raw_input_date = scan.nextLine();
+        if(raw_input_date.length() != 7){
+            System.out.println("[Error] Invalid Input format! Back to bookstore interface");
+            return;
+        }
         String segment[] = raw_input_date.split("-");
+        if(segment[0].length()!=4){
+            System.out.println("[Error] Invalid Input format! Back to bookstore interface");
+            return;
+        }
+        if(segment[1].length()!=2){
+            System.out.println("[Error] Invalid Input format! Back to bookstore interface");
+            return;
+        }
+        int year_check;
+        int month_check;
+        try{
+            year_check = Integer.valueOf(segment[0]);
+            month_check = Integer.valueOf(segment[1]);
+        }
+        catch(Exception e){
+            System.out.println("[Error] Invalid Input! Back to bookstore interface");
+            return;
+        }
+        if(month_check > 12){
+            System.out.println("[Error] Invalid Input! Back to bookstore interface");
+            return;
+        }
         String select_sql2 = """
             select order_id, customer_id, o_date , charge
             from orders
@@ -149,14 +175,19 @@ public class BookStore {
                 String ISBN = rs2.getString("ISBN");
                 String title = rs2.getString("title");
                 int num = rs2.getInt("num");
-                System.out.println(ISBN + "   " + title + "    " + num);
-                count++;
-                if(count == num_popular){
-                    mark = num;
-                }
                 if(mark != num && count >= num_popular){
                     max_print = true;
                 }
+                else{
+                    System.out.println(ISBN + "   " + title + "    " + num);
+                    count++;
+                }
+                if(count == num_popular){
+                    mark = num;
+                }
+            }
+            if(count < num_popular){
+                System.out.println("Only " + count + " books in the system");
             }
         }
         catch(Exception e){
