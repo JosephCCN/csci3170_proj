@@ -1,6 +1,7 @@
 package inter;
 
 import java.sql.*;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class BookStore {
@@ -9,8 +10,91 @@ public class BookStore {
     public BookStore(Statement s){
         this.stmt = s;
     }
-
+    public void printBScli(){
+        System.out.println("<This is the bookstore interface.>");
+        System.out.println("1. Order Update.");
+        System.out.println("2. Order Query.");
+        System.out.println("3. N most Popular Book Query.");
+        System.out.println("4. Back to main meun.");
+        System.out.println("");
+        System.out.print("What is your choice??..");
+    }
+    public void orderupdate(){
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Please input the order ID: ");
+        boolean found = false;
+        String order_id = scan.nextLine();
+        String select_sql = 
+        """
+            SELECT orders.order_id,orders.shipping_status, sum(ordering.quantity) as num
+            FROM orders, ordering
+            WHERE orders.order_id=ordering.order_id
+            group by orders.shipping_status,orders.order_id
+            order by orders.order_id asc    
+        """;
+        try{
+            ResultSet rs = stmt.executeQuery(select_sql);
+            String select_shipstatus = "none";
+            int num = 0;
+            while(rs.next() && !found){
+                String select_id = rs.getString("order_id");
+                if(Objects.equals(select_id, order_id)){
+                    select_shipstatus = rs.getString("shipping_status");
+                    num = rs.getInt("num");
+                    found = true;
+                }
+            }
+            if(found){
+                System.out.println("the Shipping status of " + order_id + " is " + select_shipstatus + " and " + num + " books ordered");
+                System.out.print("Are you sure to update the shipping status? (Yes=Y) ");
+                if(Objects.equals(select_shipstatus, "Y")){
+                    System.out.print("\n");
+                    System.out.println("The status has already been 'Yes'. You cannot update it ");
+                }
+                else{
+                    String option = scan.nextLine();
+                    if(Objects.equals(option, "Y")){
+                        String select_sql1 = "update orders set orders.shipping_status = 'Y' where orders.order_id = '"+order_id+"' ";
+                        try{
+                            stmt.executeUpdate(select_sql1);
+                            System.out.println("Updated shiping status");
+                        }
+                        catch(Exception e) {
+                            System.out.println(e);
+                        }
+                    }
+                    else{
+                        System.out.println("[Error] Invalid choice, back to bookstore interface");
+                    }
+                }
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+        
+    }
     public void start(){
-        System.out.println("Book Store Interface");
+        Scanner scanner = new Scanner(System.in);
+        while(true){
+            printBScli();
+            int choice = scanner.nextInt();
+            if(choice == 1){
+                orderupdate();
+            }
+            else if(choice == 2){
+
+            }
+            else if(choice == 3){
+                
+            }
+            else if(choice == 4){
+                return;
+            }
+            else{
+                System.out.print("[Error] Invalid choice, choose again.\n");
+            }
+        }
+
     }
 }

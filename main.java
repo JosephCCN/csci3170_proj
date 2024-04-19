@@ -31,7 +31,7 @@ class Lobby {
             printStartMenu();
             int choice = scanner.nextInt();
             if(choice == 1){
-                SystemInterface interFace  = new SystemInterface(stmt);
+                SystemInterface interFace = new SystemInterface(stmt);
                 interFace.start();
             }
             else if(choice == 2){
@@ -41,6 +41,7 @@ class Lobby {
             else if(choice == 3){
                 BookStore interFace = new BookStore(stmt);
                 interFace.start();
+                continue;
             }
             else if(choice == 4){
                 System.out.println("The System Date is now: " + year + "-" + month + "-" + day);
@@ -66,8 +67,8 @@ class main{
 
 
         String host = "jdbc:oracle:thin:@//db18.cse.cuhk.edu.hk:1521/oradb.cse.cuhk.edu.hk";
-        String username = "h017";
-        String password = "cicsEvva";
+        String username = "h072";
+        String password = "danfiavI";
         
 
         try{

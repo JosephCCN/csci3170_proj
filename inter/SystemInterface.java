@@ -137,5 +137,6 @@ public class SystemInterface{
                 setSysDate();
             }
         } while(choice != 5);
+        scan.close();
     }
 }
