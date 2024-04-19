@@ -1,12 +1,15 @@
 package inter;
 
 import java.sql.*;
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 
 public class SystemInterface{
 
     private Statement stmt;
+    private String year = "0000";
+    private String month = "00";
+    private String day = "00";
 
     public SystemInterface(Statement s) {
         stmt = s;
@@ -220,7 +223,53 @@ public class SystemInterface{
     }
 
     private void setSysDate() {
+        try{
+            Scanner scanner = new Scanner(System.in);
 
+            ResultSet rs = this.stmt.executeQuery("select max(o_date) from orders");
+            rs.next();
+            String date = rs.getString(1);
+            date = date.substring(0, 9);
+
+            String newDate;
+            boolean pass = true;
+
+            do {
+                pass = true;
+                System.out.print("Please Input the date (YYYYMMDD): ");
+                newDate = scanner.nextLine();
+                boolean isNumeric = true;
+                for(int i=0;i<newDate.length() && isNumeric;i++) {
+                    if(!('0' <= newDate.charAt(i) && newDate.charAt(i) <= '9')) isNumeric = false;
+                }
+                if(newDate.length() != 8) {
+                    System.out.println("Date should in (YYYYMMDD), please input again!");
+                    pass = false;
+                }
+                else if(!isNumeric) {
+                    System.out.println("Date should in all digits, please input again!");
+                    pass = false;
+                }
+            }while(!pass);
+            
+            String year = newDate.substring(0, 4);
+            String month = newDate.substring(4, 6);
+            String day = newDate.substring(6, 8);
+
+            this.year = year;
+            this.month = month;
+            this.day = day;
+
+            System.out.println("Latest date in orders: " + date);
+            System.out.println("Today is " + this.getDate());
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getDate() {
+        return year + "-" + month + "-" + day;
     }
 
     public void start() {

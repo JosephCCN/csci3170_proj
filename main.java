@@ -6,10 +6,6 @@ import inter.*;
 class Lobby {
     private Statement stmt;
 
-    String year = "0000";
-    String month = "00";
-    String day = "00";
-
     public Lobby(Statement s){
         this.stmt = s;
     }
@@ -26,24 +22,25 @@ class Lobby {
     }
 
     public void start(){
+        SystemInterface system  = new SystemInterface(stmt);
+        Customer customer = new Customer(stmt);
+        BookStore bookStore = new BookStore(stmt);
+
         Scanner scanner = new Scanner(System.in);
         while(true) {
             printStartMenu();
             int choice = scanner.nextInt();
             if(choice == 1){
-                SystemInterface interFace  = new SystemInterface(stmt);
-                interFace.start();
+                system.start();
             }
             else if(choice == 2){
-                Customer interFace = new Customer(stmt);
-                interFace.start();
+                customer.start();
             }
             else if(choice == 3){
-                BookStore interFace = new BookStore(stmt);
-                interFace.start();
+                bookStore.start();
             }
             else if(choice == 4){
-                System.out.println("The System Date is now: " + year + "-" + month + "-" + day);
+                System.out.println("The System Date is now: " + system.getDate());
                 continue;
             }
             else if(choice == 5){
