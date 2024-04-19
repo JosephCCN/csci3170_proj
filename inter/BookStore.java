@@ -68,11 +68,54 @@ public class BookStore {
                     }
                 }
             }
+            else{
+                System.out.println("Cannot find the order id. Back to bookstore interface");
+            }
         }
         catch(Exception e) {
             System.out.println(e);
+        }   
+    }
+    public void orderquery(){
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Please input the Month for Order Query (e.g.2003-06): ");
+        String raw_input_date = scan.nextLine();
+        String segment[] = raw_input_date.split("-");
+        String select_sql2 = """
+            select order_id, customer_id, o_date , charge
+            from orders
+            order by order_id asc        
+        """;
+        int record_num = 1;
+        int total_charge = 0;
+        try{
+            ResultSet rs1 = stmt.executeQuery(select_sql2);
+            while(rs1.next()){
+                String find_date = rs1.getString("o_date");
+                String segment1[] = find_date.split("-");
+                String segment2[] = find_date.split(" ");
+                if(Objects.equals(segment[0], segment1[0]) && Objects.equals(segment[1], segment1[1])){
+                    System.out.print("\n");
+                    System.out.println("Record : " + record_num);
+                    record_num += 1;
+                    String od_id = rs1.getString("order_id");
+                    String cust_id = rs1.getString("customer_id");
+                    int charge = rs1.getInt("charge");
+                    System.out.println("order_id : " + od_id);
+                    System.out.println("customer_id : " + cust_id);
+                    System.out.println("date : " + segment2[0]);
+                    System.out.println("charge : " + charge);
+                    total_charge += charge;
+                    System.out.print("\n");
+                }
+            }
+            System.out.print("\n");
+            System.out.println("Total charges of the month is " + total_charge);
+            System.out.println("Back to bookstore interface");
         }
-        
+        catch(Exception e){
+            System.out.println(e);
+        }
     }
     public void start(){
         Scanner scanner = new Scanner(System.in);
@@ -83,7 +126,7 @@ public class BookStore {
                 orderupdate();
             }
             else if(choice == 2){
-
+                orderquery();
             }
             else if(choice == 3){
                 
