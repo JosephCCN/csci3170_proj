@@ -34,17 +34,10 @@ public class SystemInterface{
             Primary Key (ISBN)
         )
         """;
-        String author = """
-        CREATE TABLE author (
-            author_name varchar(50),
-            Primary Key (author_name)
-        )
-        """;
         String Book_author = """
         CREATE TABLE Book_author (
             author_name varchar(50),
             ISBN char(13),
-            FOREIGN KEY(author_name) REFERENCES author(author_name) on delete CASCADE,
             FOREIGN KEY(ISBN) REFERENCES book(ISBN) on delete CASCADE
         )
         """;
@@ -63,15 +56,8 @@ public class SystemInterface{
             o_date DATE,
             shipping_status char(1),
             charge Integer,
-            Primary Key (order_id)
-        )
-        """;
-        String have = """
-        CREATE TABLE have (
-            order_id char(8),
             customer_id varchar(10),
-            FOREIGN KEY(customer_id) REFERENCES customer(customer_id) on delete CASCADE,
-            FOREIGN KEY(order_id) REFERENCES orders(order_id) on delete CASCADE
+            Primary Key (order_id)
         )
         """;
         String ordering = 
@@ -86,13 +72,11 @@ public class SystemInterface{
         """;
         try {
             stmt.executeQuery(book);
-            stmt.executeQuery(author);
             stmt.executeQuery(orders);
             stmt.executeQuery(customer);
 
             stmt.executeQuery(Book_author);
             stmt.executeQuery(ordering);
-            stmt.executeQuery(have);
         }
         catch(Exception e) {
             System.out.println(e);
@@ -100,7 +84,7 @@ public class SystemInterface{
     }
 
     private void deleteTable() {
-        String[] tables = {"have", "ordering", "Book_author", "customer", "orders", "author", "book"};
+        String[] tables = {"ordering", "Book_author", "customer", "orders", "book"};
         try{
             for(int i=0;i<7;i++) {
                 String query = String.join(" ", "drop table", tables[i]);
@@ -118,15 +102,14 @@ public class SystemInterface{
             while(scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parm = line.split("\\|", 0);
-
+                
                 String isbn = parm[0];
-                String name = parm[1];
+                String title = parm[1];
                 String price = parm[2];
                 String copies = parm[3];
 
-                String query = String.format("insert into book values ('%s', '%s', %s, %s)", isbn, name, price, copies);
+                String query = String.format("insert into book values ('%s', '%s', %s, %s)", isbn, title, price, copies);
 
-                // System.out.println(query);
                 this.stmt.executeQuery(query);
             }
             scanner.close();
@@ -134,7 +117,27 @@ public class SystemInterface{
         catch(Exception e) {
             e.printStackTrace();
         }
-}
+    }
+
+    private void insertAuthor(File file) {
+        try{
+            Scanner scanner = new Scanner(file);
+            while(scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parm = line.split("\\|", 0);
+                
+                String isbn = parm[0];
+                String name = parm[1];
+
+                String query = String.format("insert into Book_author values ('%s', '%s')", name, isbn);
+                this.stmt.executeQuery(query);
+            }
+            scanner.close();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void insertData() {
         Scanner scanner = new Scanner(System.in);
@@ -146,6 +149,7 @@ public class SystemInterface{
             if(listOfFiles[i].getName().equals("book.txt")) {
                 insertBook(new File(path, "book.txt"));
             }
+            else if(listOfFiles[i].getName().equals("book_author.txt")) insertAuthor(new File(path, "book_author.txt"));
         }
     }
 
