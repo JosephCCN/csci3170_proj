@@ -39,6 +39,7 @@ public class Customer {
 
     public void print_interface() {
         System.out.println("<This is the customer interface.>");
+        System.out.println("---------------------------------");
         System.out.println("1. Book Search.");
         System.out.println("2. Order Creation.");
         System.out.println("3. Order Altering.");
@@ -84,10 +85,15 @@ public class Customer {
         System.out.print("Input the ISBN: ");
         Scanner scan = new Scanner(System.in);
         String isbn;
-        isbn =  scan.nextLine();
+        isbn = scan.nextLine();
+        System.out.print("\n");
+        String sql = """
+                select * 
+                from book
+                """;
         try{
-            ResultSet rs = stmt.executeQuery("select * from book");
-            int count = 0;
+            ResultSet rs = stmt.executeQuery(sql);
+            int count = 1;
             while(rs.next()) {
                 System.out.println("Record: " + count + "\nBook Title: " + rs.getString("title") + "\nISBN: " + rs.getString("ISBN") + "\nUnit Price: " + rs.getInt("unit_price") + "\nNo Of Available: " + rs.getInt("no_of_copies") + "\nAuthors:\n");
                 count = count + 1;
@@ -102,21 +108,21 @@ public class Customer {
         System.out.print("Input the Book Title: ");
         Scanner scan = new Scanner(System.in);
         String book_title;
-        book_title =  scan.nextLine();
+        book_title = scan.nextLine();
     }
 
     public void Author_Name() {
         System.out.print("Input the Author Name: ");
         Scanner scan = new Scanner(System.in);
         String author_name;
-        author_name =  scan.nextLine();
+        author_name = scan.nextLine();
     }
 
     public void order_creation() {
         System.out.print("Please enter your customerID??");
         Scanner scan = new Scanner(System.in);
         String customer_id;
-        customer_id =  scan.nextLine();
+        customer_id = scan.nextLine();
         System.out.println(">> What book do you want to order??");
         System.out.println(">> Input ISBN and then the quantity.");
         System.out.println(">> You can press \"L\" to see the ordered list, or \"F\" to finish ordering.");
@@ -133,17 +139,43 @@ public class Customer {
             }
             else{
                 System.out.print("Please enter the quantity of the order: ");
+                String quantity_i;
                 int quantity;
-                quantity = scan.nextInt();
+                quantity_i = scan.nextLine();
+                quantity = Integer.valueOf(quantity_i);
             }
         }
     }
 
     public void order_altering() {
-
+        System.out.print("Please enter the orderID that you want to change: ");
+        Scanner scan = new Scanner(System.in);
+        String order_id;
+        order_id = scan.nextLine();
+        System.out.println("Which book you want to alter (input book no.):");
+        String book_no_i;
+        int book_no;
+        book_no_i = scan.nextLine();
+        book_no = Integer.valueOf(book_no_i);
+        System.out.println("input add or remove");
+        String action;
+        action = scan.nextLine();
+        System.out.print("input the number: ");
+        int action_no;
+        action_no = scan.nextInt();
+        System.out.println("Update is ok!");
+        System.out.println("Update done!!");
+        System.out.println("Updated charge");
     }
 
     public void order_query() {
-
+        System.out.print("Please input your customerID: ");
+        Scanner scan = new Scanner(System.in);
+        String customer_id;
+        customer_id = scan.nextLine();
+        System.out.print("Please input the year: ");
+        int year;
+        year = scan.nextInt();
+        System.out.println("order query");
     }
 }
