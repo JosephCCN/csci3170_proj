@@ -290,10 +290,6 @@ public class SystemInterface{
             else if(choice == 4) {
                 setSysDate();
             }
-            else if(choice == 5){
-                return;
-            }
         } while(choice != 5);
-        scan.close();
     }
 }

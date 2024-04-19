@@ -22,7 +22,7 @@ class Lobby {
     }
 
     public void start(){
-        SystemInterface system  = new SystemInterface(stmt);
+        SystemInterface system = new SystemInterface(stmt);
         Customer customer = new Customer(stmt);
         BookStore bookStore = new BookStore(stmt);
 
