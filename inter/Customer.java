@@ -13,7 +13,7 @@ public class Customer {
     public void start(){
         Scanner scan = new Scanner(System.in);
         int choice;
-        do {
+        while(true) {
             print_interface();
             choice = scan.nextInt();
             if(choice == 1) {
@@ -28,10 +28,16 @@ public class Customer {
             else if(choice == 4) {
                 order_query();
             }
-        } while(choice != 5);
+            else if(choice == 5) {
+                break;
+            }
+            else{
+                System.out.print("[Error] Invalid choice, choose again.\n");
+            }
+        };
     }
 
-    public static void print_interface() {
+    public void print_interface() {
         System.out.println("<This is the customer interface.>");
         System.out.println("1. Book Search.");
         System.out.println("2. Order Creation.");
@@ -41,41 +47,10 @@ public class Customer {
         System.out.print("Please enter your choice??..");
     }
 
-    public static void book_search() {
-        /*
-        public static void print_book_search_interface() {
-            System.out.println("What do you want to search??");
-            System.out.println("1 ISBN");
-            System.out.println("2 Book Title");
-            System.out.println("3 Author Name");
-            System.out.println("4 Exit");
-            System.out.print("Your choice?...");
-        }
-
-        public static void ISBN() {
-            System.out.print("Input the ISBN: ");
-            Scanner scan = new Scanner(System.in);
-            string isbn;
-            isbn =  scan.nextLine();
-        }
-
-        public static void Book_Title() {
-            System.out.print("Input the Book Title: ");
-            Scanner scan = new Scanner(System.in);
-            string book_title;
-            book_title =  scan.nextLine();
-        }
-
-        public static void Author_Name() {
-            System.out.print("Input the Author Name: ");
-            Scanner scan = new Scanner(System.in);
-            string author_name;
-            author_name =  scan.nextLine();
-        }
-
+    public void book_search() {
         Scanner scan = new Scanner(System.in);
         int choice;
-        do {
+        while(true) {
             print_book_search_interface();
             choice = scan.nextInt();
             if(choice == 1) {
@@ -87,23 +62,88 @@ public class Customer {
             else if(choice == 3) {
                 Author_Name();
             }
-        } while(choice != 4);
-        System.out.flush();
-        CustomerInterface cus_inf = new CustomerInterface(stmt);
-        cus_inf.run();
-        */
+            else if(choice == 4) {
+                break;
+            }
+            else{
+                System.out.print("[Error] Invalid choice, choose again.\n");
+            }
+        };
     }
 
-    public static void order_creation() {
-       
+    public void print_book_search_interface() {
+        System.out.println("What do you want to search??");
+        System.out.println("1 ISBN");
+        System.out.println("2 Book Title");
+        System.out.println("3 Author Name");
+        System.out.println("4 Exit");
+        System.out.print("Your choice?...");
     }
 
-    public static void order_altering() {
+    public void ISBN() {
+        System.out.print("Input the ISBN: ");
+        Scanner scan = new Scanner(System.in);
+        String isbn;
+        isbn =  scan.nextLine();
+        try{
+            ResultSet rs = stmt.executeQuery("select * from book");
+            int count = 0;
+            while(rs.next()) {
+                System.out.println("Record: " + count + "\nBook Title: " + rs.getString("title") + "\nISBN: " + rs.getString("ISBN") + "\nUnit Price: " + rs.getInt("unit_price") + "\nNo Of Available: " + rs.getInt("no_of_copies") + "\nAuthors:\n");
+                count = count + 1;
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public void Book_Title() {
+        System.out.print("Input the Book Title: ");
+        Scanner scan = new Scanner(System.in);
+        String book_title;
+        book_title =  scan.nextLine();
+    }
+
+    public void Author_Name() {
+        System.out.print("Input the Author Name: ");
+        Scanner scan = new Scanner(System.in);
+        String author_name;
+        author_name =  scan.nextLine();
+    }
+
+    public void order_creation() {
+        System.out.print("Please enter your customerID??");
+        Scanner scan = new Scanner(System.in);
+        String customer_id;
+        customer_id =  scan.nextLine();
+        System.out.println(">> What book do you want to order??");
+        System.out.println(">> Input ISBN and then the quantity.");
+        System.out.println(">> You can press \"L\" to see the ordered list, or \"F\" to finish ordering.");
+        while(true){
+            System.out.print("Please enter the book's ISBN: ");
+            String isbn;
+            isbn = scan.nextLine();
+            if(isbn.equals("L")){
+                System.out.println("ISBN          Number:");
+            }
+            else if(isbn.equals("F")){
+                System.out.println("Your order has been created.");
+                break;
+            }
+            else{
+                System.out.print("Please enter the quantity of the order: ");
+                int quantity;
+                quantity = scan.nextInt();
+            }
+        }
+    }
+
+    public void order_altering() {
 
     }
 
-    public static void order_query() {
+    public void order_query() {
 
     }
 }
-
