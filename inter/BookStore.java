@@ -65,11 +65,13 @@ public class BookStore {
                     }
                     else{
                         System.out.println("[Error] Invalid choice, back to bookstore interface");
+                        return;
                     }
                 }
             }
             else{
                 System.out.println("Cannot find the order id. Back to bookstore interface");
+                return;
             }
         }
         catch(Exception e) {
@@ -112,6 +114,50 @@ public class BookStore {
             System.out.print("\n");
             System.out.println("Total charges of the month is " + total_charge);
             System.out.println("Back to bookstore interface");
+            return;
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+    }
+    public void n_popular(){
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Please input the N popular books number: ");
+        String save_num_popular = scan.nextLine();
+        int num_popular;
+        int count = 0;
+        int mark = 0;
+        boolean max_print = false;
+        try{
+            num_popular = Integer.valueOf(save_num_popular);
+        }
+        catch(NumberFormatException e){
+            System.out.println("[Error] Invalid input, back to bookstore interface");
+            return;
+        }
+        String select_sql3 = """
+            select sum(o.quantity) as num, o.ISBN, b.title
+            from ordering o, book b
+            where o.ISBN = b.ISBN
+            group by o.ISBN, b.title
+            order by o.ISBN asc, num desc 
+            """;
+        System.out.println("ISBN            Title           copies");
+        try{
+            ResultSet rs2 = stmt.executeQuery(select_sql3);
+            while(rs2.next() && !max_print){
+                String ISBN = rs2.getString("ISBN");
+                String title = rs2.getString("title");
+                int num = rs2.getInt("num");
+                System.out.println(ISBN + "   " + title + "    " + num);
+                count++;
+                if(count == num_popular){
+                    mark = num;
+                }
+                if(mark != num && count >= num_popular){
+                    max_print = true;
+                }
+            }
         }
         catch(Exception e){
             System.out.println(e);
@@ -129,7 +175,7 @@ public class BookStore {
                 orderquery();
             }
             else if(choice == 3){
-                
+                n_popular();
             }
             else if(choice == 4){
                 return;
