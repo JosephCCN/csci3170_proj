@@ -380,6 +380,22 @@ public class Customer {
         System.out.println("Update is ok!");
         System.out.println("Update done!!");
         System.out.println("Updated charge");
+        int new_book_no_c = 1;
+        String sql_new_order = "select * from orders os, ordering oi where os.order_id = oi.order_id and os.order_id = '" + order_id + "'";
+        try{
+            ResultSet rs = stmt.executeQuery(sql_new_order);
+            while(rs.next()){
+                if(new_book_no_c == 1){
+                    System.out.println("orderID: " + order_id + " shipping: " + rs.getString("shipping_status") + " charge: " + rs.getInt("charge") + " customerID: " + rs.getString("customer_id"));
+                }
+                System.out.println("book no: " + new_book_no_c + " ISBN: " + rs.getString("ISBN") + " quantity: " + rs.getInt("quantity"));
+                new_book_no_c = new_book_no_c + 1;
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+        System.out.print("\n");
     }
 
     public void order_query() {
