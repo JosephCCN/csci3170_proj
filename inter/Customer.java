@@ -138,6 +138,8 @@ public class Customer {
         catch(Exception e) {
             System.out.println(e);
         }
+        char order_id_l = new_order_id.charAt(new_order_id.length() - 1);
+        System.out.println(new_order_id);
         System.out.print("Please enter your customerID??");
         Scanner scan = new Scanner(System.in);
         String customer_id;
@@ -197,7 +199,12 @@ public class Customer {
                 }
                 System.out.println("Your order has been created.");
                 String sql_orders = "insert into orders(order_id, o_date, shipping_status, charge, customer_id) values(" + new_order_id + ", " + date + ", N, " + charge + ", " + customer_id + ")";
-                System.out.println(sql_orders);
+                try {
+                    stmt.executeQuery(sql_orders);
+                } 
+                catch (Exception e) {
+                    System.out.println(e);
+                }
                 break;
             }
             else{
@@ -221,7 +228,12 @@ public class Customer {
                 }
                 else{
                     String sql_ordering = "insert into ordering(order_id, ISBN, quantity) values(" + new_order_id + ", " + isbn + ", " + quantity + ")";
-                    System.out.println(sql_ordering);
+                    try {
+                        stmt.executeQuery(sql_ordering);
+                    } 
+                    catch (Exception e) {
+                        System.out.println(e);
+                    }
                 }
             }
         }
