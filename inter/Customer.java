@@ -119,6 +119,25 @@ public class Customer {
     }
 
     public void order_creation() {
+        SystemInterface system = new SystemInterface(stmt);
+        String date = system.getDate();
+        int total_book = 0;
+        int charge = 0;
+        int copies = 0;
+        String new_order_id = "";
+        String sql_order_id = """
+                select max(order_id)
+                from ordering
+                """;
+        try{
+            ResultSet rs = stmt.executeQuery(sql_order_id);
+            while(rs.next()){
+                new_order_id = rs.getString("max(order_id)");
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
         System.out.print("Please enter your customerID??");
         Scanner scan = new Scanner(System.in);
         String customer_id;
@@ -132,9 +151,53 @@ public class Customer {
             isbn = scan.nextLine();
             if(isbn.equals("L")){
                 System.out.println("ISBN          Number:");
+                String sql_list = "select ISBN, quantity from ordering where order_id = '" + new_order_id + "'";
+                try{
+                    ResultSet rs = stmt.executeQuery(sql_list);
+                    while(rs.next()){
+                        System.out.print(rs.getString("ISBN"));
+                        System.out.print("   ");
+                        System.out.println(rs.getInt("quantity"));
+                    }
+                }
+                catch(Exception e) {
+                    System.out.println(e);
+                }
             }
             else if(isbn.equals("F")){
+                String sql_total_book = "select sum(quantity) from ordering where order_id = '" + new_order_id + "'";
+                try{
+                    ResultSet rs = stmt.executeQuery(sql_total_book);
+                    while(rs.next()){
+                        total_book = rs.getInt("sum(quantity)");
+                    }
+                }
+                catch(Exception e) {
+                    System.out.println(e);
+                }
+                if(total_book > 0){
+                    String sql_book_price = "select * from book b, ordering o where b.ISBN = o.ISBN and o.order_id = '" + new_order_id + "'";
+                    try{
+                        ResultSet rs = stmt.executeQuery(sql_book_price);
+                        while(rs.next()){
+                            int unit_price = 0;
+                            int quantity = 0;
+                            unit_price = rs.getInt("unit_price");
+                            quantity = rs.getInt("quantity");
+                            charge = charge + unit_price * quantity;
+                        }
+                    }
+                    catch(Exception e) {
+                        System.out.println(e);
+                    }
+                    charge = charge + total_book*10 + 10;
+                }
+                else{
+                    charge = 0;
+                }
                 System.out.println("Your order has been created.");
+                String sql_orders = "insert into orders(order_id, o_date, shipping_status, charge, customer_id) values(" + new_order_id + ", " + date + ", N, " + charge + ", " + customer_id + ")";
+                System.out.println(sql_orders);
                 break;
             }
             else{
@@ -142,16 +205,48 @@ public class Customer {
                 String quantity_i;
                 int quantity;
                 quantity_i = scan.nextLine();
-                quantity = Integer.valueOf(quantity_i);
+                quantity = Integer.valueOf(quantity_i); 
+                String sql_copies = "select * from book where ISBN = '" + isbn + "'";
+                try{
+                    ResultSet rs = stmt.executeQuery(sql_copies);
+                    while(rs.next()){
+                        copies = rs.getInt("no_of_copies");
+                    }
+                }
+                catch(Exception e) {
+                    System.out.println(e);
+                }
+                if(quantity > copies){
+                    System.out.println("There are not enough book copies available.");
+                }
+                else{
+                    String sql_ordering = "insert into ordering(order_id, ISBN, quantity) values(" + new_order_id + ", " + isbn + ", " + quantity + ")";
+                    System.out.println(sql_ordering);
+                }
             }
         }
     }
 
     public void order_altering() {
+        int book_no_c = 1;
         System.out.print("Please enter the orderID that you want to change: ");
         Scanner scan = new Scanner(System.in);
         String order_id;
         order_id = scan.nextLine();
+        String sql_order = "select * from orders os, ordering oi where os.order_id = oi.order_id and os.order_id = '" + order_id + "'";
+        try{
+            ResultSet rs = stmt.executeQuery(sql_order);
+            while(rs.next()){
+                if(book_no_c == 1){
+                    System.out.println("orderID: " + order_id + " shipping: " + rs.getString("shipping_status") + " charge: " + rs.getInt("charge") + " customerID: " + rs.getString("customer_id"));
+                }
+                System.out.println("book no: " + book_no_c + " ISBN: " + rs.getString("ISBN") + " quantity: " + rs.getInt("quantity"));
+                book_no_c = book_no_c + 1;
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
         System.out.println("Which book you want to alter (input book no.):");
         String book_no_i;
         int book_no;
