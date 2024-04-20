@@ -7,9 +7,9 @@ import java.io.*;
 public class SystemInterface{
 
     private Statement stmt;
-    private String year = "0000";
-    private String month = "00";
-    private String day = "00";
+    private String year = "2005";
+    private String month = "01";
+    private String day = "01";
 
     public SystemInterface(Statement s) {
         stmt = s;

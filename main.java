@@ -63,8 +63,8 @@ class main{
 
 
         String host = "jdbc:oracle:thin:@//db18.cse.cuhk.edu.hk:1521/oradb.cse.cuhk.edu.hk";
-        String username = "h072";
-        String password = "danfiavI";
+        String username = "h017";
+        String password = "cicsEvva";
         
 
         try{

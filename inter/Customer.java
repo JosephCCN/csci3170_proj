@@ -87,21 +87,39 @@ public class Customer {
         String isbn;
         isbn = scan.nextLine();
         System.out.print("\n");
-        String sql = """
-                select * 
-                from book
-                """;
+        String sql = "select b.ISBN, b.title, b.unit_price, b.no_of_copies, ba.author_name from book b, book_author ba where b.ISBN = ba.ISBN and b.ISBN = '"+isbn+"' order by ba.author_name asc ";
         try{
             ResultSet rs = stmt.executeQuery(sql);
             int count = 1;
+            String result_b_t;
+            String result_ISBN;
+            int result_price;
+            int result_no;
+            String result_author;
             while(rs.next()) {
-                System.out.println("Record: " + count + "\nBook Title: " + rs.getString("title") + "\nISBN: " + rs.getString("ISBN") + "\nUnit Price: " + rs.getInt("unit_price") + "\nNo Of Available: " + rs.getInt("no_of_copies") + "\nAuthors:\n");
+                result_author = rs.getString("author_name");
+                if(count == 1){
+                    System.out.println("Record " + count);
+                    result_ISBN = rs.getString("ISBN");
+                    result_b_t = rs.getString("title");
+                    result_price = rs.getInt("unit_price");
+                    result_no = rs.getInt("no_of_copies"); 
+                    System.out.println("ISBN: " + result_ISBN);
+                    System.out.println("Book Title:" + result_b_t);
+                    System.out.println("Unit Price:" + result_price);
+                    System.out.println("No of Available:" + result_no);
+                    System.out.println("Authors:\n" + count + " :" + result_author);
+                }
+                else{
+                    System.out.println(count + " :" + result_author);
+                }
                 count = count + 1;
             }
         }
         catch(Exception e) {
             System.out.println(e);
         }
+        System.out.println("\nSearch end. You cannot have any action on searching result.\nBack to book search interface\n");
     }
 
     public void Book_Title() {
@@ -109,6 +127,49 @@ public class Customer {
         Scanner scan = new Scanner(System.in);
         String book_title;
         book_title = scan.nextLine();
+        System.out.println("\n");
+        String sql1 = "select b.ISBN, b.title, b.unit_price, b.no_of_copies, ba.author_name from book b, book_author ba where b.ISBN = ba.ISBN and b.title like '"+book_title+"' order by b.ISBN, ba.author_name asc";
+        try{
+            ResultSet rs = stmt.executeQuery(sql1);
+            int record_count = 0;
+            int author_count = 1;
+            String result_b_t;
+            String result_ISBN;
+            int result_price;
+            int result_no;
+            String result_author;
+            String current_ISBN = "";
+            while(rs.next()){
+                result_author = rs.getString("author_name");
+                result_ISBN = rs.getString("ISBN");
+                result_b_t = rs.getString("title");
+                result_price = rs.getInt("unit_price");
+                result_no = rs.getInt("no_of_copies");
+                if(!current_ISBN.equals(result_ISBN)){
+                    record_count++;
+                    if(record_count > 1){
+                        System.out.print("\n");
+                    }
+                    author_count = 1;
+                    current_ISBN = String.valueOf(result_ISBN);
+                    System.out.println("Record " + record_count);
+                    System.out.println("ISBN: " + result_ISBN);
+                    System.out.println("Book Title:" + result_b_t);
+                    System.out.println("Unit Price:" + result_price);
+                    System.out.println("No of Available:" + result_no);
+                    System.out.println("Authors:\n" + author_count + " :" + result_author);
+                    author_count++;
+                }
+                else{
+                    System.out.println(author_count + " :" + result_author);
+                    author_count++;
+                }
+            }
+            System.out.println("Search end. You cannot have any action on searching result.\nBack to book search interface\n");
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
     }
 
     public void Author_Name() {
@@ -116,11 +177,55 @@ public class Customer {
         Scanner scan = new Scanner(System.in);
         String author_name;
         author_name = scan.nextLine();
+        System.out.println("\n");
+        String sql1 = "select b.ISBN, b.title, b.unit_price, b.no_of_copies, ba.author_name from book b, book_author ba where b.ISBN = ba.ISBN and b.ISBN in (Select b.ISBN from book b, book_author ba where b.ISBN = ba.ISBN and ba.author_name like '"+author_name+"') order by b.ISBN, ba.author_name asc";
+        try{
+            ResultSet rs = stmt.executeQuery(sql1);
+            int record_count = 0;
+            int author_count = 1;
+            String result_b_t;
+            String result_ISBN;
+            int result_price;
+            int result_no;
+            String result_author;
+            String current_ISBN = "";
+            while(rs.next()){
+                result_author = rs.getString("author_name");
+                result_ISBN = rs.getString("ISBN");
+                result_b_t = rs.getString("title");
+                result_price = rs.getInt("unit_price");
+                result_no = rs.getInt("no_of_copies");
+                if(!current_ISBN.equals(result_ISBN)){
+                    record_count++;
+                    if(record_count > 1){
+                        System.out.print("\n");
+                    }
+                    author_count = 1;
+                    current_ISBN = String.valueOf(result_ISBN);
+                    System.out.println("Record " + record_count);
+                    System.out.println("ISBN: " + result_ISBN);
+                    System.out.println("Book Title:" + result_b_t);
+                    System.out.println("Unit Price:" + result_price);
+                    System.out.println("No of Available:" + result_no);
+                    System.out.println("Authors:\n" + author_count + " :" + result_author);
+                    author_count++;
+                }
+                else{
+                    System.out.println(author_count + " :" + result_author);
+                    author_count++;
+                }
+            }
+            System.out.println("Search end. You cannot have any action on searching result.\nBack to book search interface\n");
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
     }
 
     public void order_creation() {
         SystemInterface system = new SystemInterface(stmt);
         String date = system.getDate();
+        System.out.println(date);
         int total_book = 0;
         int charge = 0;
         int copies = 0;
@@ -138,8 +243,10 @@ public class Customer {
         catch(Exception e) {
             System.out.println(e);
         }
-        char order_id_l = new_order_id.charAt(new_order_id.length() - 1);
-        System.out.println(new_order_id);
+        int order_id_i = Integer.valueOf(new_order_id);
+        order_id_i = order_id_i + 1;
+        String new_order_id_i = String.valueOf(order_id_i);
+        new_order_id = "000000" + new_order_id_i;
         System.out.print("Please enter your customerID??");
         Scanner scan = new Scanner(System.in);
         String customer_id;
@@ -198,7 +305,7 @@ public class Customer {
                     charge = 0;
                 }
                 System.out.println("Your order has been created.");
-                String sql_orders = "insert into orders(order_id, o_date, shipping_status, charge, customer_id) values(" + new_order_id + ", " + date + ", N, " + charge + ", " + customer_id + ")";
+                String sql_orders = "insert into orders(order_id, o_date, shipping_status, charge, customer_id) values('" + new_order_id + "', to_date('" + date + "', 'YYYY-MM-DD'), 'N', " + charge + ", '" + customer_id + "')";
                 try {
                     stmt.executeQuery(sql_orders);
                 } 
@@ -227,7 +334,7 @@ public class Customer {
                     System.out.println("There are not enough book copies available.");
                 }
                 else{
-                    String sql_ordering = "insert into ordering(order_id, ISBN, quantity) values(" + new_order_id + ", " + isbn + ", " + quantity + ")";
+                    String sql_ordering = "insert into ordering(order_id, ISBN, quantity) values('" + new_order_id + "', '" + isbn + "', " + quantity + ")";
                     try {
                         stmt.executeQuery(sql_ordering);
                     } 
