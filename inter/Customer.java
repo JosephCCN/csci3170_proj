@@ -348,6 +348,7 @@ public class Customer {
 
     public void order_altering() {
         int book_no_c = 1;
+        int quantity = 0;
         System.out.print("Please enter the orderID that you want to change: ");
         Scanner scan = new Scanner(System.in);
         String order_id;
@@ -356,6 +357,7 @@ public class Customer {
         try{
             ResultSet rs = stmt.executeQuery(sql_order);
             while(rs.next()){
+                quantity = rs.getInt("quantity");
                 if(book_no_c == 1){
                     System.out.println("orderID: " + order_id + " shipping: " + rs.getString("shipping_status") + " charge: " + rs.getInt("charge") + " customerID: " + rs.getString("customer_id"));
                 }
@@ -374,26 +376,74 @@ public class Customer {
         System.out.println("input add or remove");
         String action;
         action = scan.nextLine();
-        System.out.print("input the number: ");
-        int action_no;
-        action_no = scan.nextInt();
-        System.out.println("Update is ok!");
-        System.out.println("Update done!!");
-        System.out.println("Updated charge");
-        int new_book_no_c = 1;
-        String sql_new_order = "select * from orders os, ordering oi where os.order_id = oi.order_id and os.order_id = '" + order_id + "'";
-        try{
-            ResultSet rs = stmt.executeQuery(sql_new_order);
-            while(rs.next()){
-                if(new_book_no_c == 1){
-                    System.out.println("orderID: " + order_id + " shipping: " + rs.getString("shipping_status") + " charge: " + rs.getInt("charge") + " customerID: " + rs.getString("customer_id"));
+        if(action.equals("add")){
+            System.out.print("input the number: ");
+            int action_no;
+            action_no = scan.nextInt();
+            int new_quantity = quantity + action_no;
+            System.out.println(new_quantity);
+            System.out.println("Update is ok!");
+            System.out.println("Update done!!");
+            System.out.println("Updated charge");
+            int new_book_no_c = 1;
+            String sql_new_order = "select * from orders os, ordering oi where os.order_id = oi.order_id and os.order_id = '" + order_id + "'";
+            try{
+                ResultSet rs = stmt.executeQuery(sql_new_order);
+                while(rs.next()){
+                    if(new_book_no_c == 1){
+                        System.out.println("orderID: " + order_id + " shipping: " + rs.getString("shipping_status") + " charge: " + rs.getInt("charge") + " customerID: " + rs.getString("customer_id"));
+                    }
+                    System.out.println("book no: " + new_book_no_c + " ISBN: " + rs.getString("ISBN") + " quantity: " + new_quantity);
+                    new_book_no_c = new_book_no_c + 1;
                 }
-                System.out.println("book no: " + new_book_no_c + " ISBN: " + rs.getString("ISBN") + " quantity: " + rs.getInt("quantity"));
-                new_book_no_c = new_book_no_c + 1;
+            }
+            catch(Exception e) {
+                System.out.println(e);
             }
         }
-        catch(Exception e) {
-            System.out.println(e);
+        else if(action.equals("remove")){
+            System.out.print("input the number: ");
+            int action_no;
+            action_no = scan.nextInt();
+            int new_quantity = quantity - action_no;
+            int new_charge = 0;
+            System.out.println("Update is ok!");
+            System.out.println("Update done!!");
+            System.out.println("Updated charge");
+            if(new_quantity == 0){
+                int new_book_no_c = 1;
+                String sql_new_order = "select * from orders os, ordering oi where os.order_id = oi.order_id and os.order_id = '" + order_id + "'";
+                try{
+                    ResultSet rs = stmt.executeQuery(sql_new_order);
+                    while(rs.next()){
+                        if(new_book_no_c == 1){
+                            System.out.println("orderID: " + order_id + " shipping: " + rs.getString("shipping_status") + " charge: " + new_charge + " customerID: " + rs.getString("customer_id"));
+                        }
+                        System.out.println("book no: " + new_book_no_c + " ISBN: " + rs.getString("ISBN") + " quantity: " + new_quantity);
+                        new_book_no_c = new_book_no_c + 1;
+                    }
+                }
+                catch(Exception e) {
+                    System.out.println(e);
+                }
+            }
+            else{
+                int new_book_no_c = 1;
+                String sql_new_order = "select * from orders os, ordering oi where os.order_id = oi.order_id and os.order_id = '" + order_id + "'";
+                try{
+                    ResultSet rs = stmt.executeQuery(sql_new_order);
+                    while(rs.next()){
+                        if(new_book_no_c == 1){
+                            System.out.println("orderID: " + order_id + " shipping: " + rs.getString("shipping_status") + " charge: " + rs.getInt("charge") + " customerID: " + rs.getString("customer_id"));
+                        }
+                        System.out.println("book no: " + new_book_no_c + " ISBN: " + rs.getString("ISBN") + " quantity: " + new_quantity);
+                        new_book_no_c = new_book_no_c + 1;
+                    }
+                }
+                catch(Exception e) {
+                    System.out.println(e);
+                }
+            }
         }
         System.out.print("\n");
     }
