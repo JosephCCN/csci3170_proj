@@ -59,7 +59,6 @@ class Lobby {
 class main{
 
     public static void main(String args[]) {
-        System.out.println("Hello");
 
 
         String host = "jdbc:oracle:thin:@//db18.cse.cuhk.edu.hk:1521/oradb.cse.cuhk.edu.hk";

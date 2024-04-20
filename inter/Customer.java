@@ -225,7 +225,6 @@ public class Customer {
     public void order_creation() {
         SystemInterface system = new SystemInterface(stmt);
         String date = system.getDate();
-        System.out.println(date);
         int total_book = 0;
         int charge = 0;
         int copies = 0;
@@ -381,7 +380,6 @@ public class Customer {
             int action_no;
             action_no = scan.nextInt();
             int new_quantity = quantity + action_no;
-            System.out.println(new_quantity);
             System.out.println("Update is ok!");
             System.out.println("Update done!!");
             System.out.println("Updated charge");
