@@ -176,6 +176,27 @@ public class Customer {
         System.out.print("Please input the year: ");
         int year;
         year = scan.nextInt();
-        System.out.println("order query");
+        String sql = """
+                select * 
+                from orders
+                """;
+        try{
+            ResultSet rs = stmt.executeQuery(sql);
+            int count = 1;
+            while(rs.next()) {
+                String date[] = rs.getString("o_date").split("-");
+                int date_year;
+                date_year = Integer.valueOf(date[0]);
+                if(customer_id.equals(rs.getString("customer_id")) && date_year == year){
+                    System.out.print("\n");
+                    System.out.println("Record: " + count + "\nordereID: " + rs.getString("order_id") + "\norderdate: " + rs.getDate("o_date") + "\ncharge: " + rs.getInt("charge") + "\nshipping status: " + rs.getString("shipping_status"));
+                    count = count + 1;
+                }
+            }
+        }
+        catch(Exception e) {
+            System.out.println(e);
+        }
+        System.out.print("\n");
     }
 }
