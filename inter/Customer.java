@@ -5,9 +5,14 @@ import java.util.Scanner;
 
 public class Customer {
     private Statement stmt;
+    private String sysDate;
 
     public Customer(Statement s){
         this.stmt = s;
+    }
+
+    public void setSysDate(String s) {
+        sysDate = s;
     }
 
     public void start(){

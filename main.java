@@ -5,6 +5,7 @@ import inter.*;
 
 class Lobby {
     private Statement stmt;
+    private String system_date;
 
     public Lobby(Statement s){
         this.stmt = s;
@@ -28,6 +29,10 @@ class Lobby {
 
         Scanner scanner = new Scanner(System.in);
         while(true) {
+
+            system_date = system.getDate();
+            customer.setSysDate(system_date);
+
             printStartMenu();
             int choice = scanner.nextInt();
             if(choice == 1){
